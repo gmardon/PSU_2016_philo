@@ -5,10 +5,10 @@
 ## Login   <romain.goasdoue@epitech.eu>
 ##
 ## Started on  Thu Mar 16 13:27:31 2017 Romain
-## Last update Thu Mar 16 13:43:44 2017 Romain
+## Last update Thu Mar 16 14:23:55 2017 Romain
 ##
 
-NAME	=
+NAME	=	philo
 
 SRC	=
 
