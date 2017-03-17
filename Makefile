@@ -1,6 +1,16 @@
+#
+# Makefile for philo in /media/gmardon/1aa9b3b8-3e24-4ea9-9b0d-d57254b2d1b9/guillaume.mardon/delivery/PSU_2016_philo/src/
+#
+# Made by Guillaume MARDON
+# Login   <guillaume.mardon@epitech.eu@epitech.eu>
+#
+# Started on  Fri Mar 17 09:31:43 2017 Guillaume MARDON
+# Last update Fri Mar 17 10:05:54 2017 Guillaume MARDON
+#
+
 NAME				=		philo
 
-CXX					=		gcc
+CC					=		gcc
 
 NOW 				:=	$(shell date +"%d %h %g:%R")
 
@@ -16,18 +26,18 @@ SRC_P				=	src/
 
 SRC					=	$(SRC_P)main.c
 
-OBJ					=		$(SRC:.c=.o)
+OBJ					=	$(SRC:.c=.o)
 
-CXXFLAGS			+= 	-Wall -Wextra -pedantic -g -lpthread
+CFLAGS  = -I./include/ -Wall -pedantic -fPIC -Wl,-rpath,./lib
 
-INCLUDE				=	./include
+LDFLAGS  = 		-I./include -L./lib -lriceferee -pthread
 
 RM					=	rm -vf
 
 all:		$(NAME)
 
 $(NAME):	$(OBJ)
-		@$(CXX) $(SRC) -o $(NAME)
+		@$(CC) $(SRC) -o $(NAME) $(LDFLAGS) 
 		@$(ECHO) $(HIGHLIGHTED)"COMPILATION SUCCEEDED ON "$(NOW)$(DEFAULT)
 
 clean:
@@ -42,7 +52,7 @@ re:		fclean all
 
 .PHONY:		all clean fclean re
 
-.c.o:
-		@$(CXX) $(CXXFLAGS) -I ./include -c $< -o $@  && \
+%.o: %.c
+		@$(CC) $(CFLAGS) -c $< -o $@  && \
 		$(ECHO) $(GREEN) " [OK] " $(TEAL) $< $(DEFAULT) || \
 		$(ECHO) $(RED) " [XX] " $(TEAL) $< $(DEFAULT)

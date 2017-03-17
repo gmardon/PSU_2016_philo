@@ -18,7 +18,7 @@
 int	RCFStartup(int ac, char **av);
 
 /* MUST be called after use to release library ressources */
-void	RCFCleanup();
+void RCFCleanup();
 
 /* Call it when a philo is eating */
 int	lphilo_eat();
