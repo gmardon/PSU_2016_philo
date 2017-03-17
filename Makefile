@@ -1,35 +1,48 @@
-##
-## Makefile for Philo in /home/romain/Delivery/Projects/PSU_2016_philo
-##
-## Made by Romain
-## Login   <romain.goasdoue@epitech.eu>
-##
-## Started on  Thu Mar 16 13:27:31 2017 Romain
-## Last update Thu Mar 16 14:23:55 2017 Romain
-##
+NAME				=		philo
 
-NAME	=	philo
+CXX					=		gcc
 
-SRC	=
+NOW 				:=	$(shell date +"%d %h %g:%R")
 
-OBJ	=
+DEFAULT				=		"\033[00m"
+GREEN				=		"\033[0;32m"
+HIGHLIGHTED			=		"\033[2;102m"
+DELETION 			=		"\033[2;103m"
+TEAL				=		"\033[1;34m"
+RED					=		"\033[1;31m"
+ECHO				=		/bin/echo -e
 
-RM	= rm -rf
+SRC_P				=	src/
 
-CC	= gcc
+SRC					=	$(SRC_P)main.c
 
-all:	$(NAME)
+OBJ					=		$(SRC:.c=.o)
 
-$(NAME):
-	$(CC)
+CXXFLAGS			+= 	-Wall -Wextra -pedantic -g -lpthread
+
+INCLUDE				=	./include
+
+RM					=	rm -vf
+
+all:		$(NAME)
+
+$(NAME):	$(OBJ)
+		@$(CXX) $(SRC) -o $(NAME)
+		@$(ECHO) $(HIGHLIGHTED)"COMPILATION SUCCEEDED ON "$(NOW)$(DEFAULT)
 
 clean:
-	$(RM) $(OBJ)
+		@$(RM) $(OBJ)
+		@$(ECHO) $(DELETION)"OBJs PROPERLY DELETED"$(DEFAULT)
 
-fclean: clean
-	$(RM) $(NAME)
+fclean:		clean
+		@$(RM) $(NAME)
+		@$(ECHO) $(DELETION)"BINARY PROPERLY DELETED"$(DEFAULT)
 
-re:	fclean all
+re:		fclean all
 
-.PHONY: all clean fclean re
+.PHONY:		all clean fclean re
 
+.c.o:
+		@$(CXX) $(CXXFLAGS) -I ./include -c $< -o $@  && \
+		$(ECHO) $(GREEN) " [OK] " $(TEAL) $< $(DEFAULT) || \
+		$(ECHO) $(RED) " [XX] " $(TEAL) $< $(DEFAULT)
