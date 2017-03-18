@@ -53,7 +53,6 @@ int run(t_args *args)
     int index;
 
     list = create_philo_list(args);
-    sem_init(&sem, 0, (args->philosophers / 2));
     index = 0;
     philo = list->next;
     while (index < args->philosophers)
@@ -66,8 +65,8 @@ int run(t_args *args)
     index = 0;
     while (index < philo->philosophers)
     {
-      pthread_join(philo->thread, NULL);
-      philo = philo->next;
-      index++;
+        pthread_join(philo->thread, NULL);
+        philo = philo->next;
+        index++;
     }
 }

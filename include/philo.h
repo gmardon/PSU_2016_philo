@@ -62,6 +62,4 @@ void eat(t_philo *philo);
 void think(t_philo *philo);
 void sleep(t_philo *philo);
 
-sem_t sem;
-
 #endif

@@ -11,20 +11,18 @@
 
 void init_philo(t_philo *philo)
 {
-  if ((philo->id % 2) == 0)
-    philo->state = EAT;
-  else
     philo->state = SLEEP;
-  if ((philo->id) == (philo->philosophers - 1) && (philo->philosophers % 2) == 1)
-    philo->state = THINK;
 }
 
 t_philo *create_philo(t_philo *previous, int philosophers, int turns, int position)
 {
     t_philo *philo;
+    t_philo	*base;
 
-    while (previous && previous->next)
-      previous = previous->next;
+    base = previous;
+    if (previous)
+        while (previous->next)
+            previous = previous->next;
     if ((philo = malloc(sizeof(t_philo))) == NULL)
         return (NULL);
     philo->actual_turn = 0;
@@ -37,8 +35,9 @@ t_philo *create_philo(t_philo *previous, int philosophers, int turns, int positi
     if (previous != NULL)
         previous->next = philo;
     philo->next = NULL;
-    if (previous)
-        return (previous);
+    if (base)
+        return (base);
+    
     return (philo);
 }
 

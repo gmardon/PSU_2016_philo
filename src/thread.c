@@ -13,7 +13,7 @@ void *thread_philo(void *arg)
 {
     t_philo	*philo;
 
-    philo = (t_philo *)arg;
+    philo = (t_philo*) arg;
     while (1)
     {
         if (philo->state == THINK)
@@ -29,26 +29,16 @@ void *thread_philo(void *arg)
 }
 
 void pre_sleep(t_philo *philo)
-{
-  if (sem_trywait(&sem) == 0)
-    {
-      pthread_mutex_lock(&(philo->mutex));
-      pthread_mutex_lock(&(philo->next->mutex));
-      eat(philo);
-      sem_post(&sem);
-    }
-  else
-    {
-      pthread_mutex_lock(&(philo->mutex));
-      think(philo);
-    }
+{  
+    pthread_mutex_lock(&(philo->mutex));
+    think(philo);
 }
 
 void pre_think(t_philo *philo)
 {
-  sem_wait(&sem);
-  pthread_mutex_lock(&(philo->mutex));
-  pthread_mutex_lock(&(philo->next->mutex));
-  eat(philo);
-  sem_post(&sem);
+    printf("[%d] try wait\n", philo->id);
+    pthread_mutex_lock(&(philo->mutex));
+    pthread_mutex_lock(&(philo->next->mutex));
+    eat(philo);
+    printf("[%d] end wait\n", philo->id);
 }
