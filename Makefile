@@ -27,6 +27,7 @@ SRC_P				=	src/
 SRC					=	$(SRC_P)main.c \
 						$(SRC_P)philo.c \
 						$(SRC_P)utils.c \
+						$(SRC_P)thread.c \
 						$(SRC_P)list.c
 
 OBJ					=	$(SRC:.c=.o)
@@ -35,7 +36,7 @@ CFLAGS  = -I./include/ -Wall -pedantic -fPIC -Wl,-rpath,./lib
 
 LDFLAGS  = 		-I./include -L./lib -lriceferee -pthread
 
-RM					=	rm -vf
+RM					=	rm -f
 
 all:		$(NAME)
 
@@ -45,11 +46,9 @@ $(NAME):	$(OBJ)
 
 clean:
 		@$(RM) $(OBJ)
-		@$(ECHO) $(DELETION)"OBJs PROPERLY DELETED"$(DEFAULT)
 
 fclean:		clean
 		@$(RM) $(NAME)
-		@$(ECHO) $(DELETION)"BINARY PROPERLY DELETED"$(DEFAULT)
 
 re:		fclean all
 

@@ -9,35 +9,63 @@
 */
 #include "philo.h"
 
-int run(t_args *args) 
+void init_philo(t_philo *philo)
 {
-    printf("run\n");
-    t_philo *list;
-    t_philo	*philo;
-    int index;
-
-    list = create_philo_list(args);
-    /*sem_init(&sem, 0, (args->philosophers / 2));
-  philo = info->philo;
-  index = 0;
-  philo = info->philo;
-  while (index < args->philosophers)
-    {
-      pthread_create(&(philo->thread), NULL, thread_philo, philo);
-      philo = philo->next;
-      index++;
-    }
-  philo = info->philo;
-  index = 0;
-  while (index < philo->p)
-    {
-      pthread_join(philo->thread, NULL);
-      philo = philo->next;
-      index++;
-    }*/
+  if ((philo->id % 2) == 0)
+    philo->state = EAT;
+  else
+    philo->state = SLEEP;
+  if ((philo->id) == (philo->philosophers - 1) && (philo->philosophers % 2) == 1)
+    philo->state = THINK;
 }
 
-void reset_philo(t_philo *philo)
+t_philo *create_philo(t_philo *previous, int philosophers, int turns, int position)
 {
+    t_philo *philo;
 
+    while (previous && previous->next)
+      previous = previous->next;
+    if ((philo = malloc(sizeof(t_philo))) == NULL)
+        return (NULL);
+    philo->actual_turn = 0;
+    philo->turns = turns;
+    philo->philosophers = philosophers;
+    philo->id = position;
+    philo->previous = previous;
+    init_philo(philo);
+    pthread_mutex_init(&(philo->mutex), NULL);
+    if (previous != NULL)
+        previous->next = philo;
+    philo->next = NULL;
+    if (previous)
+        return (previous);
+    return (philo);
+}
+
+void think(t_philo *philo)
+{
+    lphilo_take_chopstick(&(philo->mutex));
+    philo->state = THINK;
+    lphilo_think();
+    lphilo_release_chopstick(&(philo->mutex));
+    pthread_mutex_unlock(&(philo->mutex));
+}
+
+void eat(t_philo *philo)
+{
+    lphilo_take_chopstick(&(philo->mutex));
+    lphilo_take_chopstick(&(philo->next->mutex));
+    philo->actual_turn += 1;
+    philo->state = EAT;
+    lphilo_eat();
+    lphilo_release_chopstick(&(philo->mutex));
+    lphilo_release_chopstick(&(philo->next->mutex));
+    pthread_mutex_unlock(&(philo->mutex));
+    pthread_mutex_unlock(&(philo->next->mutex));
+}
+
+void sleep(t_philo *philo)
+{
+    lphilo_sleep();
+    philo->state = SLEEP;
 }

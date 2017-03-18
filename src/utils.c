@@ -8,16 +8,3 @@
 ** Last update Fri Mar 17 10:22:23 2017 Guillaume MARDON
 */
 #include "philo.h"
-
-int is_num(char *nbr)
-{
-    int index;
-
-    index = -1;
-    while (nbr[++index])
-    {
-        if (nbr[index] < '0' || nbr[index] > '9')
-            return (0);
-    }
-    return (1);
-}

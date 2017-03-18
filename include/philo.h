@@ -12,6 +12,7 @@
 #define _PHILO_H_
 
 #include "extern.h"
+#include <semaphore.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,12 +34,16 @@ typedef struct		s_philo
 {
   //t_stick		*right_hand;
   //t_stick		*left_hand;
+  int actual_turn;
+  int philosophers;
+  int turns;
   struct s_philo	*next;
   struct s_philo	*previous;
   enum State state;
   int			id;
   pthread_t		thread;
   pthread_mutex_t mutex;
+  sem_t *sem;
 }			t_philo;
 
 typedef struct s_args 
@@ -48,8 +53,15 @@ typedef struct s_args
 } t_args;
 
 int run(t_args *args);
-void reset_philo(t_philo *philo);
-int is_num(char *nbr);
 t_philo *create_philo_list(t_args *args);
+t_philo *create_philo(t_philo *previous, int philosophers, int turns, int position);
+void *thread_philo(void *arg);
+void pre_think(t_philo *philo);
+void pre_sleep(t_philo *philo);
+void eat(t_philo *philo);
+void think(t_philo *philo);
+void sleep(t_philo *philo);
+
+sem_t sem;
 
 #endif

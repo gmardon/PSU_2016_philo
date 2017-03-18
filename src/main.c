@@ -36,8 +36,7 @@ int main(int argc, char **argv)
 {
     RCFStartup(argc, argv);
     t_args *args;
-    args = parse_args(--argc, ++argv); 
-    printf("args->philosophers = %d\nargs->turns = %d\n", args->philosophers, args->turns);
+    args = parse_args(--argc, ++argv);
     if (args->philosophers == -1 || args->turns == -1) 
     {
         RCFCleanup();
@@ -45,4 +44,30 @@ int main(int argc, char **argv)
     }
     run(args);
     RCFCleanup();
+}
+
+int run(t_args *args) 
+{
+    t_philo *list;
+    t_philo	*philo;
+    int index;
+
+    list = create_philo_list(args);
+    sem_init(&sem, 0, (args->philosophers / 2));
+    index = 0;
+    philo = list->next;
+    while (index < args->philosophers)
+    {
+        pthread_create(&(philo->thread), NULL, thread_philo, philo);
+        philo = philo->next;
+        index++;
+    }
+    philo = list->next;
+    index = 0;
+    while (index < philo->philosophers)
+    {
+      pthread_join(philo->thread, NULL);
+      philo = philo->next;
+      index++;
+    }
 }

@@ -11,5 +11,18 @@
 
 t_philo *create_philo_list(t_args *args)
 {
-    return (NULL);
+    t_philo	*start;
+    t_philo	*actual;
+    int index;
+
+    index = 0;
+    actual = NULL;
+    while (index++ < args->philosophers)
+        actual = create_philo(actual, args->philosophers, args->turns, index);
+    start = actual;
+    while (actual->next != NULL)
+        actual = actual->next;
+    actual->next = start;
+    start->previous = actual;
+    return (start);
 }
