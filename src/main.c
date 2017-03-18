@@ -7,7 +7,7 @@
 ** Started on  Fri Mar 17 09:31:43 2017 Guillaume MARDON
 ** Last update Fri Mar 17 10:05:54 2017 Guillaume MARDON
 */
-#include "../include/philo.h"
+#include "philo.h"
 
 t_args *parse_args(int argc, char *argv[]) 
 {
@@ -16,17 +16,17 @@ t_args *parse_args(int argc, char *argv[])
 
     args = malloc(sizeof(t_args));
     if (args == NULL)
-        exit(84);
+        return NULL;
 
+    args->philosophers = -1;
+    args->turns = -1;
     index = 0;
     while (index < argc) 
     {
-        if (strcmp(argv[index], "-e") == 0 && (argc > index + 1)) 
-        {
-            args->philosophers = strtol(argv[index++], NULL, 10);
-            printf("philosophers: %d\n",  args->philosophers);
-        }
-        printf(argv[index]);
+        if (strcmp(argv[index], "-p") == 0 && (argc > index + 1)) 
+            args->philosophers = strtol(argv[index + 1], NULL, 10);
+        else if (strcmp(argv[index], "-e") == 0 && (argc > index + 1)) 
+            args->turns = strtol(argv[index + 1], NULL, 10);
         index++;
     }
     return (args);
@@ -36,7 +36,13 @@ int main(int argc, char **argv)
 {
     RCFStartup(argc, argv);
     t_args *args;
-
     args = parse_args(--argc, ++argv); 
+    printf("args->philosophers = %d\nargs->turns = %d\n", args->philosophers, args->turns);
+    if (args->philosophers == -1 || args->turns == -1) 
+    {
+        RCFCleanup();
+        exit(1);
+    }
+    run(args);
     RCFCleanup();
 }

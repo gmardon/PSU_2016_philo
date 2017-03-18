@@ -24,7 +24,10 @@ ECHO				=		/bin/echo -e
 
 SRC_P				=	src/
 
-SRC					=	$(SRC_P)main.c
+SRC					=	$(SRC_P)main.c \
+						$(SRC_P)philo.c \
+						$(SRC_P)utils.c \
+						$(SRC_P)list.c
 
 OBJ					=	$(SRC:.c=.o)
 
