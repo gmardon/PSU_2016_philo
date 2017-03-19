@@ -5,62 +5,65 @@
 ** Login   <guillaume.mardon@epitech.eu@epitech.eu>
 **
 ** Started on  Fri Mar 17 09:31:43 2017 Guillaume MARDON
-** Last update Fri Mar 17 10:05:54 2017 Guillaume MARDON
+** Last update Sun Mar 19 23:11:16 2017 Romain
 */
+
 #include "philo.h"
 
-t_args *parse_args(int argc, char *argv[]) 
+t_args	*parse_args(int argc, char *argv[])
 {
-    int index;
-    t_args *args;
+  int		index;
+  t_args	*args;
 
-    args = malloc(sizeof(t_args));
-    if (args == NULL)
-        return NULL;
+  args = malloc(sizeof(t_args));
+  if (args == NULL)
+    return NULL;
 
-    args->philosophers = -1;
-    args->turns = -1;
-    index = 0;
-    while (index < argc) 
+  args->philosophers = -1;
+  args->turns = -1;
+  index = 0;
+  while (index < argc)
     {
-        if (strcmp(argv[index], "-p") == 0 && (argc > index + 1)) 
-            args->philosophers = strtol(argv[index + 1], NULL, 10);
-        else if (strcmp(argv[index], "-e") == 0 && (argc > index + 1)) 
-            args->turns = strtol(argv[index + 1], NULL, 10);
-        index++;
+      if (strcmp(argv[index], "-p") == 0 && (argc > index + 1))
+	args->philosophers = strtol(argv[index + 1], NULL, 10);
+      else if (strcmp(argv[index], "-e") == 0 && (argc > index + 1))
+	args->turns = strtol(argv[index + 1], NULL, 10);
+      index++;
     }
-    return (args);
+  return (args);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    t_args *args;
+  t_args	*args;
 
-    RCFStartup(argc, argv);
-    args = parse_args(--argc, ++argv);
-    if (args->philosophers == -1 || args->turns == -1) 
+  RCFStartup(argc, argv);
+  args = parse_args(--argc, ++argv);
+  if (args->philosophers == -1 || args->turns == -1)
     {
-        RCFCleanup();
-        exit(1);
+      RCFCleanup();
+      exit(1);
     }
-    run(args);
-    RCFCleanup();
+  run(args);
+  RCFCleanup();
 }
 
 void    *philo_thread(void *arg)
 {
-  t_philo *data;
-  int index;
+  t_philo	*data;
+  int		index;
 
   data = (t_philo *)arg;
   index = -1;
   while (++index < data->turns)
     {
+
       while (pthread_mutex_lock(&data->mutex) == -1);
       lphilo_take_chopstick(&data->mutex);
       lphilo_think();
       lphilo_release_chopstick(&data->mutex);
       pthread_mutex_unlock(&data->mutex);
+
       while (pthread_mutex_lock(&data->mutex) == -1 && pthread_mutex_lock(&data->next->mutex) == -1);
       lphilo_take_chopstick(&data->mutex);
       lphilo_take_chopstick(&data->next->mutex);
@@ -74,16 +77,16 @@ void    *philo_thread(void *arg)
   pthread_exit(0);
 }
 
-int run(t_args *args) 
+int	run(t_args *args)
 {
-    t_philo *list;
-    int index;
+  t_philo	*list;
+  int		index;
 
-    if ((list = malloc(sizeof(t_philo) * args->philosophers)) == NULL)
-        return (-1);
 
-    index = -1;
-    while (++index < args->philosophers)
+  if ((list = malloc(sizeof(t_philo) * args->philosophers)) == NULL)
+    return (-1);
+  index = -1;
+  while (++index < args->philosophers)
     {
       if (index == args->philosophers - 1)
         list[index].next = &list[0];
