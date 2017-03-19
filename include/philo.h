@@ -20,30 +20,12 @@
 
 typedef enum { false, true } bool;
 
-enum State { UNDEFINED = (-1), SLEEP = (0), EAT = (1), THINK = (2) };
-
-/*
-typedef struct		s_stick
-{
-  bool			is_used;
-  pthread_mutex_t	*mutex;
-}			t_stick;
-*/
-
 typedef struct		s_philo
 {
-  //t_stick		*right_hand;
-  //t_stick		*left_hand;
-  int actual_turn;
-  int philosophers;
-  int turns;
   struct s_philo	*next;
-  struct s_philo	*previous;
-  enum State state;
-  int			id;
   pthread_t		thread;
   pthread_mutex_t mutex;
-  sem_t *sem;
+  int turns;
 }			t_philo;
 
 typedef struct s_args 

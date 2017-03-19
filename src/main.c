@@ -34,8 +34,9 @@ t_args *parse_args(int argc, char *argv[])
 
 int main(int argc, char **argv)
 {
-    RCFStartup(argc, argv);
     t_args *args;
+
+    RCFStartup(argc, argv);
     args = parse_args(--argc, ++argv);
     if (args->philosophers == -1 || args->turns == -1) 
     {
@@ -46,27 +47,53 @@ int main(int argc, char **argv)
     RCFCleanup();
 }
 
+void    *philo_thread(void *arg)
+{
+  t_philo *data;
+  int index;
+
+  data = (t_philo *)arg;
+  index = -1;
+  while (++index < data->turns)
+    {
+      while (pthread_mutex_lock(&data->mutex) == -1);
+      lphilo_take_chopstick(&data->mutex);
+      lphilo_think();
+      lphilo_release_chopstick(&data->mutex);
+      pthread_mutex_unlock(&data->mutex);
+      while (pthread_mutex_lock(&data->mutex) == -1 && pthread_mutex_lock(&data->next->mutex) == -1);
+      lphilo_take_chopstick(&data->mutex);
+      lphilo_take_chopstick(&data->next->mutex);
+      lphilo_eat();
+      lphilo_release_chopstick(&data->mutex);
+      lphilo_release_chopstick(&data->next->mutex);
+      pthread_mutex_unlock(&data->mutex);
+      pthread_mutex_unlock(&data->next->mutex);
+      lphilo_sleep();
+    }
+  pthread_exit(0);
+}
+
 int run(t_args *args) 
 {
     t_philo *list;
-    t_philo	*philo;
     int index;
 
-    list = create_philo_list(args);
-    index = 0;
-    philo = list->next;
-    while (index < args->philosophers)
+    if ((list = malloc(sizeof(t_philo) * args->philosophers)) == NULL)
+        return (-1);
+
+    index = -1;
+    while (++index < args->philosophers)
     {
-        pthread_create(&(philo->thread), NULL, thread_philo, philo);
-        philo = philo->next;
-        index++;
+      if (index == args->philosophers - 1)
+        list[index].next = &list[0];
+      else
+        list[index].next = &list[index + 1];
+      pthread_create(&list[index].thread, NULL, philo_thread, &list[index]);
+      list[index].turns = args->turns;
     }
-    philo = list->next;
-    index = 0;
-    while (index < philo->philosophers)
-    {
-        pthread_join(philo->thread, NULL);
-        philo = philo->next;
-        index++;
-    }
+  index = -1;
+  while (++index < args->philosophers)
+    pthread_join(list[index].thread, NULL);
+  return (0);
 }
