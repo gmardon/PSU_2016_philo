@@ -24,8 +24,7 @@ ECHO				=		/bin/echo -e
 
 SRC_P				=	src/
 
-SRC					=	$(SRC_P)main.c \
-						$(SRC_P)utils.c 
+SRC					=	$(SRC_P)main.c
 
 OBJ					=	$(SRC:.c=.o)
 
